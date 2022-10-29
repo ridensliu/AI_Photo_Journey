@@ -26,7 +26,8 @@ public class Settings
 #if !UNITY_EDITOR
             return $"{Application.dataPath}/../stable-diffusion";
 #else
-            return $"{System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile)}/stable-diffusion";
+            // return $"{System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile)}/stable-diffusion";
+            return "G:/CCI_FinalProject/aiimages-gitpull/build/stable-diffusion";
 #endif
         }
     }
@@ -37,7 +38,8 @@ public class Settings
 #if !UNITY_EDITOR
             return $"{Application.dataPath}/../env";
 #else
-            return $"{System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile)}/anaconda3/envs/ldm";
+            // return $"{System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile)}/anaconda3/envs/ldm";
+            return "G:/CCI_FinalProject/aiimages-gitpull/build/env";
 #endif
         }
     }
@@ -49,7 +51,8 @@ public class Settings
 #if !UNITY_EDITOR
             return $"{Application.dataPath}/../env/Scripts/activate.bat";
 #else
-            return $"{System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile)}/anaconda3/Scripts/activate.bat";
+            // return $"{System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile)}/anaconda3/Scripts/activate.bat";
+            return "G:/CCI_FinalProject/aiimages-gitpull/build/env/Scripts/activate.bat";
 #endif
         }
     }

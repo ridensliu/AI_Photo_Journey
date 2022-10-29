@@ -21,7 +21,9 @@ public class GeneratorConnection : MonoBehaviour
     public StreamWriter streamWriter;
 
     public bool bProcessing = false;
-    public bool bInitialized = false;
+    public bool bInitialized = false;   // ?
+    public Settings settings;
+    public Texture2D texDefaultMissing;
 
     private List<string> liLines = new List<string>();
     private List<string> liErrors = new List<string>();
@@ -66,9 +68,9 @@ public class GeneratorConnection : MonoBehaviour
         {
 #if !UNITY_EDITOR
             
-            streamWriter.WriteLine($"call {ToolManager.s_settings.strAnacondaBatPath}");
+            streamWriter.WriteLine($"call {(settings ?? ToolManager.s_settings).strAnacondaBatPath}");
 #else
-            streamWriter.WriteLine($"\"{ToolManager.s_settings.strAnacondaBatPath}\"");
+            streamWriter.WriteLine($"\"{(settings ?? ToolManager.s_settings).strAnacondaBatPath}\"");
 #endif
             if (_bStartAI)
                 StartAI();
@@ -78,20 +80,20 @@ public class GeneratorConnection : MonoBehaviour
     public void StartAI()
     {
 #if !UNITY_EDITOR
-        string strEasyInstallContent = $"{ToolManager.s_settings.strSDDirectory}\\src\\clip\n" +
-                                        $"{ToolManager.s_settings.strSDDirectory}\\src\\taming-transformers\n" +
-                                        $"{ToolManager.s_settings.strSDDirectory}\n" +
-                                        $"{ToolManager.s_settings.strSDDirectory}\\src\\k-diffusion";
+        string strEasyInstallContent = $"{(settings ?? ToolManager.s_settings).strSDDirectory}\\src\\clip\n" +
+                                        $"{(settings ?? ToolManager.s_settings).strSDDirectory}\\src\\taming-transformers\n" +
+                                        $"{(settings ?? ToolManager.s_settings).strSDDirectory}\n" +
+                                        $"{(settings ?? ToolManager.s_settings).strSDDirectory}\\src\\k-diffusion";
         strEasyInstallContent = strEasyInstallContent.Replace("/", "\\").ToLower();
-        File.WriteAllText(Path.Combine(ToolManager.s_settings.strEnvPath, "Lib/site-packages/easy-install.pth"), strEasyInstallContent);
+        File.WriteAllText(Path.Combine((settings ?? ToolManager.s_settings).strEnvPath, "Lib/site-packages/easy-install.pth"), strEasyInstallContent);
 #endif
 
         // change drive
-        UnityEngine.Debug.Log("Writing: " + $"{ToolManager.s_settings.strSDDirectory.Substring(0, 2)}");
-        streamWriter.WriteLine(ToolManager.s_settings.strSDDirectory.Substring(0, 2)); 
+        UnityEngine.Debug.Log("Writing: " + $"{(settings ?? ToolManager.s_settings).strSDDirectory.Substring(0, 2)}");
+        streamWriter.WriteLine((settings ?? ToolManager.s_settings).strSDDirectory.Substring(0, 2)); 
         // open sd directory
-        UnityEngine.Debug.Log("Writing: " + $"cd \"{ToolManager.s_settings.strSDDirectory}\"");
-        streamWriter.WriteLine($"cd \"{ToolManager.s_settings.strSDDirectory}\"");
+        UnityEngine.Debug.Log("Writing: " + $"cd \"{(settings ?? ToolManager.s_settings).strSDDirectory}\"");
+        streamWriter.WriteLine($"cd \"{(settings ?? ToolManager.s_settings).strSDDirectory}\"");
         // activate environment
         UnityEngine.Debug.Log("Writing: " + "activate ldm");
         streamWriter.WriteLine("activate ldm");
@@ -107,10 +109,10 @@ public class GeneratorConnection : MonoBehaviour
         // start ai
         UnityEngine.Debug.Log("Writing: " + "python scripts/dream.py");
         streamWriter.WriteLine($"python scripts/dream.py" +
-            $" -o \"{ToolManager.s_settings.strOutputDirectory}\"" +
-            $" {(ToolManager.s_settings.bFullPrecision ? "--precision=float32" : "")}" +
-            $" {(ToolManager.s_settings.bFreeGPUMemory ? "--free_gpu_mem" : "")}" +
-            $" {(ToolManager.s_settings.iGPU > 0 ? $"-d cuda:{ToolManager.s_settings.iGPU}" : "")}");
+            $" -o \"{(settings ?? ToolManager.s_settings).strOutputDirectory}\"" +
+            $" {((settings ?? ToolManager.s_settings).bFullPrecision ? "--precision=float32" : "")}" +
+            $" {((settings ?? ToolManager.s_settings).bFreeGPUMemory ? "--free_gpu_mem" : "")}" +
+            $" {((settings ?? ToolManager.s_settings).iGPU > 0 ? $"-d cuda:{(settings ?? ToolManager.s_settings).iGPU}" : "")}");
     }
 
     public void RequestImage(ImageInfo _output, Action<Texture2D, string, bool> _actionTextureReturn)
@@ -147,7 +149,7 @@ public class GeneratorConnection : MonoBehaviour
         }
         else
         {
-            FileInfo fileLatestPng = new DirectoryInfo(ToolManager.s_settings.strOutputDirectory).GetFiles().Where(x => Path.GetExtension(x.Name) == ".png").OrderByDescending(f => f.LastWriteTime).First();
+            FileInfo fileLatestPng = new DirectoryInfo((settings ?? ToolManager.s_settings).strOutputDirectory).GetFiles().Where(x => Path.GetExtension(x.Name) == ".png").OrderByDescending(f => f.LastWriteTime).First();
 
             UnityEngine.Debug.Log($" New file appeared! Loading {fileLatestPng.Name}");
 
@@ -156,7 +158,7 @@ public class GeneratorConnection : MonoBehaviour
 
             UnityEngine.Debug.Log($"Finished loading image.");
 
-            _actionTextureReturn.Invoke(Utility.texLoadImageSecure(fileLatestPng.FullName, ToolManager.s_texDefaultMissing), fileLatestPng.Name, true);
+            _actionTextureReturn.Invoke(Utility.texLoadImageSecure(fileLatestPng.FullName, texDefaultMissing == null ? ToolManager.s_texDefaultMissing : texDefaultMissing), fileLatestPng.Name, true);
         }
 
         bProcessing = false;
@@ -216,13 +218,13 @@ public class GeneratorConnection : MonoBehaviour
     {
         if (iLastFileCount == -1)
         {
-            iLastFileCount = Directory.GetFiles(ToolManager.s_settings.strOutputDirectory).Length;
+            iLastFileCount = Directory.GetFiles((settings ?? ToolManager.s_settings).strOutputDirectory).Length;
             return false;
         }
 
-        if (Directory.GetFiles(ToolManager.s_settings.strOutputDirectory).Length != iLastFileCount)
+        if (Directory.GetFiles((settings ?? ToolManager.s_settings).strOutputDirectory).Length != iLastFileCount)
         {
-            iLastFileCount = Directory.GetFiles(ToolManager.s_settings.strOutputDirectory).Length;
+            iLastFileCount = Directory.GetFiles((settings ?? ToolManager.s_settings).strOutputDirectory).Length;
             return true;
         }
 

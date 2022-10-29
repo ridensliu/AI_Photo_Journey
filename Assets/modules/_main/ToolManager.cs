@@ -68,7 +68,7 @@ public class ToolManager : MonoBehaviour
 
     public List<ImagePreview> liImagePreviews;
 
-    public GeneratorConnection genConnection;
+    public GeneratorConnection genConnection; // Generate Connection
     public OptionsVisualizer options;
 
     public GameObject goSelectPage;
@@ -168,18 +168,23 @@ public class ToolManager : MonoBehaviour
 
     void Update()
     {
-        bool bButtonActive = genConnection.bInitialized;
-        if (bButtonActive != buttonStart.interactable)
+        // init or not?
+        bool bButtonActive = genConnection.bInitialized; 
+        
+        // buttonStart: start button; make sure the button is interactive
+        if (bButtonActive != buttonStart.interactable) 
             buttonStart.interactable = bButtonActive;
 
+        // if genConnection is initialized
         if (!genConnection.bInitialized)
         {
-            fLoadingTime += Time.deltaTime;
+            fLoadingTime += Time.deltaTime; // load time
             if (fLoadingTime < 200f)
                 textFeedback.text = $"Loading model. Please wait... ({fLoadingTime.ToString("0")}s) {(bWontWork ? strGetWarningText() : "")}";
             else
                 textFeedback.text = $"<color=#FF0000>Loading model... ({fLoadingTime.ToString("0")}s) {(bWontWork ? strGetWarningText() : "")} - Ask for Discord support!</color>";
         }
+        // if genConnection is processing
         else if (genConnection.bProcessing)
         {
             fProcessingTime += Time.deltaTime;
@@ -188,13 +193,13 @@ public class ToolManager : MonoBehaviour
         else
         {
             if (bKeepRequesting && liRequestQueue.Count == 0)
-                RequestImage();
+                RequestImage(); //定义新的输出图片 并添加到 LiRequestQuene 中
 
             if (liRequestQueue.Count > 0)
             {
-                outputCurrentRequested = liRequestQueue.First();
+                outputCurrentRequested = liRequestQueue.First(); //目前在请求输出得图片
                 outputCurrentRequested.eventStartsProcessing.Invoke(outputCurrentRequested);
-                genConnection.RequestImage(outputCurrentRequested, OnTextureReceived);
+                genConnection.RequestImage(outputCurrentRequested, OnTextureReceived); //生成输出图片 png
                 liRequestQueue.RemoveAt(0);
                 fProcessingTime = 0f;
                 eventQueueUpdated.Invoke();
@@ -254,14 +259,14 @@ public class ToolManager : MonoBehaviour
     {
         UnityEngine.Debug.Log($"Starting preview for {options.promptGet(_bPreviewSteps:true, _bPreviewUpscale:true, _bPreviewFaceEnhance:true).strToString()}");
 
-        ImageInfo outputNew = new ImageInfo()
+        ImageInfo outputNew = new ImageInfo()   //定义新的输出image信息
         {
             strGUID = Guid.NewGuid().ToString(),
             prompt = options.promptGet(_bPreviewSteps: true, _bPreviewUpscale: true, _bPreviewFaceEnhance: true),
             extraOptionsFull = options.extraOptionsGet(),
             userCreator = userActive
         };
-        RequestImage(outputNew);
+        RequestImage(outputNew); //将新的输出信息添加到 LiRequestQueue 请求列表中
     }
 
     public void RequestImage(ImageInfo _output)

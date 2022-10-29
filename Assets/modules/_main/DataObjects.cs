@@ -256,7 +256,8 @@ public class StartImage
 
     public string strGetFullPath()
     {
-        return Path.Combine(ToolManager.s_settings.strInputDirectory, strFilePath);
+        // return Path.Combine(ToolManager.s_settings.strInputDirectory, strFilePath);
+        return Path.Combine(NewImageGenerator.Instance.Settings.strInputDirectory, strFilePath);
     }
 }
 
