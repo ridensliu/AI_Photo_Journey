@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -26,6 +27,10 @@ public class NewImageGenerator : MonoBehaviour
     
     private Settings _settings;
     public Settings Settings => _settings;
+    public UnityEvent onModelLoaded;
+    public UnityEvent onStartGenerating;
+    public UnityEvent<Texture2D> onPictureGenerated;
+    public bool IsGenerating { get; private set; }
 
     private void Awake()
     {
@@ -38,6 +43,18 @@ public class NewImageGenerator : MonoBehaviour
         GeneratorConnection.instance.settings = _settings;
         GeneratorConnection.instance.texDefaultMissing = texDefaultMissing;
         GeneratorConnection.instance.Init();
+
+        StartCoroutine(CheckModelLoad());
+    }
+
+    private IEnumerator CheckModelLoad()
+    {
+        while (!GeneratorConnection.instance.bInitialized)
+        {
+            yield return null;
+        }
+        
+        onModelLoaded.Invoke();
     }
 
     [Button("Generate")]
@@ -75,6 +92,11 @@ public class NewImageGenerator : MonoBehaviour
     [Button("Take Screenshot & Gen")]
     public void TakeScreenshotAndGenerate()
     {
+        if (!GeneratorConnection.instance.bInitialized || IsGenerating) return;
+
+        IsGenerating = true;
+        onStartGenerating.Invoke();
+        
         screenshotHelper.Take((file) =>
         {
             ImageInfo outputNew = new ImageInfo()   //定义新的输出image信息
@@ -98,7 +120,8 @@ public class NewImageGenerator : MonoBehaviour
             GeneratorConnection.instance.RequestImage(outputNew, (texture2D, s, arg3) =>
             {
                 resultDisplay.texture = texture2D;
-                Debug.Log(texture2D.width);
+                IsGenerating = false;
+                onPictureGenerated.Invoke(texture2D);
             });
         });
     }
