@@ -7,6 +7,7 @@ public class PhotoTaker : MonoBehaviour
 {
     public UnityEvent onTakePhoto;
     public UnityEvent onClosePicture;
+    
 
     private void OnTakePhoto()
     {
@@ -21,4 +22,5 @@ public class PhotoTaker : MonoBehaviour
         
         onClosePicture.Invoke();
     }
+    
 }

@@ -23,4 +23,11 @@ public class CanvasFader : MonoBehaviour
         LeanTween.alphaCanvas(_canvasGroup, alphaEnd, tweenTime)
             .setEase(tweenType);
     }
+
+    private void OnDisable()
+    {
+        // _canvasGroup.alpha = alphaEnd;
+        LeanTween.alphaCanvas(_canvasGroup, alphaStart, tweenTime)
+            .setEase(tweenType);
+    }
 }

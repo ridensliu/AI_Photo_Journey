@@ -125,4 +125,14 @@ public class NewImageGenerator : MonoBehaviour
             });
         });
     }
+
+    public void SetContentPrompt(string value)
+    {
+        contentString = value;
+    }
+
+    public void SetStylePrompt(string value)
+    {
+        styleString = value;
+    }
 }
