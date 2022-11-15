@@ -135,4 +135,16 @@ public class NewImageGenerator : MonoBehaviour
     {
         styleString = value;
     }
+
+    public string GetPromptText()
+    {
+        return contentString + ", " + styleString;
+    }
+
+    public void GetRandomTextFromPool(PromptPool pool)
+    {
+        var info = pool.infos[Random.Range(0, pool.infos.Length)];
+        SetContentPrompt(info.content);
+        SetStylePrompt(info.style);
+    }
 }
