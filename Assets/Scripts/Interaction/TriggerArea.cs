@@ -17,4 +17,9 @@ public class TriggerArea : MonoBehaviour
             if (hideSelfAfterTrigger) gameObject.SetActive(false);
         }
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (hideSelfAfterTrigger) gameObject.SetActive(false);
+    }
 }
