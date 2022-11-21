@@ -14,13 +14,18 @@ public class PromptTextUI : MonoBehaviour
     public float offsetY = 25f;
     public TextMeshProUGUI text;
     [TextArea(5, 15)]
+    public string tipsText;
+    [TextArea(5, 15)]
     [OnValueChanged("OnFormatTextChanged")]
     public string formatText;
+    [TextArea(5, 15)]
+    public string onlyTipsFormatText;
     
     private RectTransform _rectTransform;
     private float _position;
     private int _tweenId;
     private bool _state;
+    private bool _onlyTips;
 
     private void Awake()
     {
@@ -34,9 +39,32 @@ public class PromptTextUI : MonoBehaviour
         SetPromptText(NewImageGenerator.Instance.GetPromptText());
     }
 
+    public void SetOnlyTips(bool onlyTips)
+    {
+        _onlyTips = onlyTips;
+        UpdateTipsText(tipsText);
+    }
+
+    public void UpdateTipsText(string tips)
+    {
+        tipsText = tips;
+        
+        if (_onlyTips)
+        {
+            text.text = string.Format(onlyTipsFormatText, tipsText);
+            text.ForceMeshUpdate();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_rectTransform);
+            UpdatePosition();
+        }
+        else
+        {
+            SetPromptText(NewImageGenerator.Instance.GetPromptText());
+        }
+    }
+
     public void SetPromptText(string content)
     {
-        text.text = string.Format(formatText, content);
+        text.text = string.Format(formatText, tipsText, content);
         text.ForceMeshUpdate();
         LayoutRebuilder.ForceRebuildLayoutImmediate(_rectTransform);
         UpdatePosition();
@@ -84,6 +112,14 @@ public class PromptTextUI : MonoBehaviour
             .setEase(LeanTweenType.easeInOutCubic)
             .setOnUpdate(UpdatePosValue)
             .id;
+    }
+
+    public void HideImmediately()
+    {
+        if (!_state) return;
+
+        _state = false;
+        UpdatePosValue(0);
     }
 
     private void UpdatePosValue(float v)

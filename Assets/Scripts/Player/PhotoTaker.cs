@@ -8,6 +8,7 @@ public class PhotoTaker : MonoBehaviour
     public UnityEvent onTakePhoto;
     public UnityEvent onClosePicture;
     public UnityEvent onToggleTask;
+    public UnityEvent onChangePrompt;
 
     private void OnTakePhoto()
     {
@@ -28,5 +29,11 @@ public class PhotoTaker : MonoBehaviour
         if (!GeneratorConnection.instance.bInitialized) return;
         
         onToggleTask.Invoke();
+    }
+
+    private void OnChangePrompt()
+    {
+        if (!GeneratorConnection.instance.bInitialized) return;
+        onChangePrompt.Invoke();
     }
 }

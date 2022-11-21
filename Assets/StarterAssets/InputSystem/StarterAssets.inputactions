@@ -76,6 +76,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ChangePrompt",
+                    "type": "Button",
+                    "id": "cf6ac69b-3d30-4311-953a-4f9a1c0cc1ba",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -301,6 +310,17 @@
                 },
                 {
                     "name": "",
+                    "id": "babe54be-8270-42fa-9f69-9d7e6de8161d",
+                    "path": "<Keyboard>/backquote",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "Close Preview",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "83062edc-10fb-4d2c-957c-3849d18999c8",
                     "path": "<Keyboard>/escape",
                     "interactions": "",
@@ -329,6 +349,17 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "ToggleTask",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "20f3b257-6e36-4abf-bad3-9fdc67899213",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "ChangePrompt",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

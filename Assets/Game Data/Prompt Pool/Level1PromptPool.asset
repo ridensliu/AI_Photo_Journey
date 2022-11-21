@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Level1PromptPool
   m_EditorClassIdentifier: 
   infos:
-  - content: Photograph of a purple garden full of lavender and pink flowers
-    style: pixelate, fantasy, retro, 8 bit, gameboy
-  - content: Happy boy and girls dancing under the moon
-    style: pixelate, fantasy, retro, 8 bit, gameboy
-  - content: Amazing spaceship
-    style: pixelate, fantasy, retro, 8 bit, gameboy
+  - content: beautiful lush natural scene on another planet
+    style: classic oil painting, medium style, sharp
+  - content: rockets taking off into the clouds long exposure and humans watching
+    style: classic oil painting, medium style, sharp
+  - content: laurentian mountains in winter
+    style: classic oil painting, medium style, sharp

@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class ScreenshotHelper : MonoBehaviour
 {
+    public static ScreenshotHelper Instance;
+    
     public RenderTexture renderTexture;
 
     private Texture2D _screenshotTex;
@@ -14,6 +16,8 @@ public class ScreenshotHelper : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
+        
         _camera = GetComponent<Camera>();
         _screenshotTex = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
     }
@@ -25,7 +29,7 @@ public class ScreenshotHelper : MonoBehaviour
 
     public void Take(Action<string> callback)
     {
-        gameObject.SetActive(true);
+        // gameObject.SetActive(true);
         StartCoroutine(TakeScreenshot(callback));
     }
 
@@ -47,6 +51,6 @@ public class ScreenshotHelper : MonoBehaviour
         
         callback.Invoke($"screenshot-{_screenshotCount - 1}.png");
         
-        gameObject.SetActive(false);
+        // gameObject.SetActive(false);
     }
 }

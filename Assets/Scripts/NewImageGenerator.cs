@@ -14,8 +14,6 @@ public class NewImageGenerator : MonoBehaviour
     [HideInInspector]
     public User userActive = new User();
     public Texture2D texDefaultMissing;
-    public RawImage resultDisplay;
-    public ScreenshotHelper screenshotHelper;
 
     [BoxGroup("Prompt")]
     public string contentString;
@@ -31,6 +29,7 @@ public class NewImageGenerator : MonoBehaviour
     public UnityEvent onStartGenerating;
     public UnityEvent<Texture2D> onPictureGenerated;
     public bool IsGenerating { get; private set; }
+    private bool _allowGenerating = true;
 
     private void Awake()
     {
@@ -75,7 +74,6 @@ public class NewImageGenerator : MonoBehaviour
         
         GeneratorConnection.instance.RequestImage(outputNew, (texture2D, s, arg3) =>
         {
-            resultDisplay.texture = texture2D;
             Debug.Log(texture2D.width);
         });
     }
@@ -83,7 +81,7 @@ public class NewImageGenerator : MonoBehaviour
     [Button("Take Screenshot")]
     public void TakeScreenshot()
     {
-        screenshotHelper.Take((file) =>
+        ScreenshotHelper.Instance.Take((file) =>
         {
             Debug.Log(file);
         });
@@ -92,13 +90,21 @@ public class NewImageGenerator : MonoBehaviour
     [Button("Take Screenshot & Gen")]
     public void TakeScreenshotAndGenerate()
     {
+        if (!_allowGenerating) return;
+        
         if (!GeneratorConnection.instance.bInitialized || IsGenerating) return;
 
         IsGenerating = true;
         onStartGenerating.Invoke();
         
-        screenshotHelper.Take((file) =>
+        ScreenshotHelper.Instance.Take((file) =>
         {
+            ImageSaver.Instance.CopyImageTo(new StartImage()
+            {
+                strFilePath = file,
+                fStrength = referenceStrength
+            }.strGetFullPath());
+            
             ImageInfo outputNew = new ImageInfo()   //定义新的输出image信息
             {
                 strGUID = Guid.NewGuid().ToString(),
@@ -119,9 +125,9 @@ public class NewImageGenerator : MonoBehaviour
         
             GeneratorConnection.instance.RequestImage(outputNew, (texture2D, s, arg3) =>
             {
-                resultDisplay.texture = texture2D;
                 IsGenerating = false;
                 onPictureGenerated.Invoke(texture2D);
+                ImageSaver.Instance.SaveTextureTo(texture2D);
             });
         });
     }
@@ -138,7 +144,7 @@ public class NewImageGenerator : MonoBehaviour
 
     public string GetPromptText()
     {
-        return contentString + ", " + styleString;
+        return "Content: " + contentString + ", \n" + "Style: " + styleString;
     }
 
     public void GetRandomTextFromPool(PromptPool pool)
@@ -146,5 +152,10 @@ public class NewImageGenerator : MonoBehaviour
         var info = pool.infos[Random.Range(0, pool.infos.Length)];
         SetContentPrompt(info.content);
         SetStylePrompt(info.style);
+    }
+
+    public void SetAllowGenerating(bool state)
+    {
+        _allowGenerating = state;
     }
 }

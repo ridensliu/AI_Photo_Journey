@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   infos:
   - content: Photograph of a purple garden full of lavender and pink flowers 2
-    style: fantasy, detailed, epic, oil painting
+    style: fantasy, detailed, epic, sharp
   - content: Happy boy and girls dancing under the moon
-    style: unreal, artstation trending
+    style: fantasy, detailed, epic, sharp
   - content: Amazing spaceship
-    style: game art, retro
+    style: fantasy, detailed, epic, sharp

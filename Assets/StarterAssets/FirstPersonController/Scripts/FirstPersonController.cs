@@ -66,6 +66,8 @@ namespace StarterAssets
 		private float _jumpTimeoutDelta;
 		private float _fallTimeoutDelta;
 
+		private bool _freezeMovement;
+
 	
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 		private PlayerInput _playerInput;
@@ -91,6 +93,7 @@ namespace StarterAssets
 		private void Awake()
 		{
 			Instance = this;
+			_controller = GetComponent<CharacterController>();
 			
 			// get a reference to our main camera
 			if (_mainCamera == null)
@@ -101,7 +104,6 @@ namespace StarterAssets
 
 		private void Start()
 		{
-			_controller = GetComponent<CharacterController>();
 			_input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 			_playerInput = GetComponent<PlayerInput>();
@@ -118,12 +120,19 @@ namespace StarterAssets
 		{
 			JumpAndGravity();
 			GroundedCheck();
+			if (_freezeMovement) return;
 			Move();
 		}
 
 		private void LateUpdate()
 		{
 			CameraRotation();
+		}
+
+		public void SetFreezeMovement(bool state)
+		{
+			_freezeMovement = state;
+			_controller.enabled = !state;
 		}
 
 		private void GroundedCheck()

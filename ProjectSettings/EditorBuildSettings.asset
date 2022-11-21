@@ -6,6 +6,22 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/BaseScene.unity
+    guid: 1920069281e55aa4f8f9c41658d0276b
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
-  m_configObjects: {}
+  - enabled: 1
+    path: Assets/Scenes/GameScene.unity
+    guid: f1abb0f47a0a21d4cb2c37785946e39d
+  - enabled: 1
+    path: Assets/Scenes/TowerLevelA.unity
+    guid: ef43230eb111fb94da22c29f7b075916
+  - enabled: 1
+    path: Assets/Scenes/TowerLevelB.unity
+    guid: c8797182f1e32064bb9710353103e5a1
+  - enabled: 1
+    path: Assets/RockyDesert/TowerLevelC.unity
+    guid: 4a6e65914902e7d4a88e2cf2db8d01b3
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 9e7be553448fa2546aea5752021cbcf7, type: 2}
